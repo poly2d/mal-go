@@ -1,7 +1,6 @@
 package read
 
 import (
-	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -28,7 +27,6 @@ func TestTokenize(t *testing.T) {
 		{")", tokens[8]},
 	}
 	for _, test := range tokenTests {
-		// Todo: figure out why space isn't ignored by the regexp.
-		assert.Equal(t, strings.TrimSpace(test.actual), test.expected)
+		assert.Equal(t, test.actual, test.expected)
 	}
 }

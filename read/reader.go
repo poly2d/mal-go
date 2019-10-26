@@ -6,7 +6,13 @@ const MALEXP = "[\\s,]*(~@|[\\[\\]{}()'`~^@]|\"(?:\\.|[^\\\"])*\"?|;.*|[^\\s\\[\
 
 func tokenize(in string) []string {
 	re := regexp.MustCompile(MALEXP)
-	return re.FindAllString(in, -1)
+	submatches := re.FindAllStringSubmatch(in, -1)
+
+	tokens := make([]string, len(submatches))
+	for i, submatch := range submatches {
+		tokens[i] = submatch[1]
+	}
+	return tokens
 }
 
 type reader interface {

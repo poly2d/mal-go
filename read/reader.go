@@ -25,18 +25,21 @@ type readerImpl struct {
 	tokens   []string
 }
 
-func (r readerImpl) next() string {
+func (r *readerImpl) next() string {
 	currToken := r.peek()
-	r.position += 1
+	r.position++
 	return currToken
 }
 
-func (r readerImpl) peek() string {
+func (r *readerImpl) peek() string {
+	if r.position < 0 || r.position >= len(r.tokens) {
+		panic("No more tokens available")
+	}
 	return r.tokens[r.position]
 }
 
 func newReader(in string) reader {
-	return readerImpl{
+	return &readerImpl{
 		tokens: tokenize(in),
 	}
 }

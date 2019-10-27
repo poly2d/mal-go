@@ -27,6 +27,30 @@ func TestTokenize(t *testing.T) {
 		{")", tokens[8]},
 	}
 	for _, test := range tokenTests {
-		assert.Equal(t, test.actual, test.expected)
+		assert.Equal(t, test.expected, test.actual)
 	}
+}
+
+func TestReaderImpl(t *testing.T) {
+	var readerTests = []struct {
+		testStr        string
+		expectedTokens []string
+	}{
+		{"abc", []string{"abc"}},
+		{"123", []string{"123"}},
+		{"( 123 456 789 )", []string{"(", "123", "456", "789", ")"}},
+		{"     (+ 2 (* 3 4))", []string{"(", "+", "2", "(", "*", "3", "4", ")", ")"}},
+	}
+
+	for _, test := range readerTests {
+		testStr := test.testStr
+		expectedTokens := test.expectedTokens
+
+		reader := newReader(testStr)
+		for _, expected := range expectedTokens {
+			assert.Equal(t, expected, reader.peek())
+			assert.Equal(t, expected, reader.next())
+		}
+	}
+
 }

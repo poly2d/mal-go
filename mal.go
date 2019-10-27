@@ -5,29 +5,34 @@ import (
 	"fmt"
 	"io"
 	"os"
+
+	"github.com/poly2d/mal-go/model"
+	"github.com/poly2d/mal-go/read"
 )
 
-func read(in string) string {
+func mRead(in string) model.MalForm {
+	return read.ReadStr(in)
+}
+
+func mEval(in model.MalForm) model.MalForm {
 	return in
 }
 
-func eval(in string) string {
+func mPrint(in model.MalForm) model.MalForm {
+	in.Print()
+	fmt.Println()
 	return in
 }
 
-func print(in string) string {
-	return in
-}
-
-func rep(in string) string {
-	readRes := read(in)
-	evalRes := eval(readRes)
-	return print(evalRes)
+func rep(in string) {
+	readRes := mRead(in)
+	evalRes := mEval(readRes)
+	mPrint(evalRes)
 }
 
 func main() {
 	const PROMPT string = "user> "
-	for true {
+	for {
 		reader := bufio.NewReader(os.Stdin)
 		fmt.Print(PROMPT)
 		in, err := reader.ReadString('\n')
@@ -35,7 +40,6 @@ func main() {
 			fmt.Println("\ngoodbye")
 			break
 		}
-		out := rep(in)
-		fmt.Println(out)
+		rep(in)
 	}
 }

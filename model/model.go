@@ -6,8 +6,6 @@ import (
 	"strings"
 )
 
-type MalEnv map[string]func(int, int) int
-
 type MalType int
 
 const (
@@ -56,3 +54,7 @@ func (mf MalForm) Sprint() string {
 func (mf MalForm) Print() {
 	fmt.Print(mf.Sprint())
 }
+
+type MalFunc func([]MalForm) MalForm
+
+type MalEnv map[string]MalFunc

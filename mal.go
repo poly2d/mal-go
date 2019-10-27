@@ -6,6 +6,8 @@ import (
 	"io"
 	"os"
 
+	"github.com/poly2d/mal-go/env"
+	"github.com/poly2d/mal-go/eval"
 	"github.com/poly2d/mal-go/model"
 	"github.com/poly2d/mal-go/read"
 )
@@ -14,8 +16,8 @@ func mRead(in string) model.MalForm {
 	return read.ReadStr(in)
 }
 
-func mEval(in model.MalForm) model.MalForm {
-	return in
+func mEval(mf model.MalForm) model.MalForm {
+	return eval.EvalAst(mf, env.ReplEnv)
 }
 
 func mPrint(in model.MalForm) model.MalForm {

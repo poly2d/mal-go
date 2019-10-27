@@ -6,6 +6,8 @@ import (
 	"strings"
 )
 
+type MalEnv map[string]func(int, int) int
+
 type MalType int
 
 const (

@@ -1,6 +1,9 @@
 package model
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 type MalType int
 
@@ -16,23 +19,30 @@ type MalForm struct {
 }
 
 func (mf MalForm) Print() {
+	fmt.Print(mf.Sprint())
+}
+
+func (mf MalForm) Sprint() string {
+	var sb strings.Builder
+
 	switch mf.Type {
 	case MalTypeAtom:
-		str := mf.Value.(string)
-		fmt.Print(str)
+		sb.WriteString(mf.Value.(string))
 	case MalTypeList:
+		sb.WriteString("(")
+
 		vals := mf.Value.([]MalForm)
-		fmt.Print("(")
 		for i, val := range vals {
-			val.Print()
+			sb.WriteString(val.Sprint())
 
 			if i == len(vals)-1 {
-				fmt.Print(")")
+				sb.WriteString(")")
 			} else {
-				fmt.Print(" ")
+				sb.WriteString(" ")
 			}
 		}
 	default:
 		panic(fmt.Sprintf("Invalid MalType, mf=%v\n", mf))
 	}
+	return sb.String()
 }

@@ -1,13 +1,23 @@
 package read
 
 import (
+	"strconv"
+
 	"github.com/poly2d/mal-go/model"
 )
 
 func readAtom(r reader) model.MalForm {
 	token := r.next()
+
+	if num, err := strconv.Atoi(token); err == nil {
+		return model.MalForm{
+			model.MalTypeNumber,
+			num,
+		}
+	}
+
 	return model.MalForm{
-		model.MalTypeAtom,
+		model.MalTypeSymbol,
 		token,
 	}
 }
@@ -18,7 +28,7 @@ func readList(r reader) model.MalForm {
 		mf := readForm(r)
 
 		switch mf.Type {
-		case model.MalTypeAtom:
+		case model.MalTypeSymbol:
 			str := mf.Value.(string)
 			if str == ")" {
 				return model.MalForm{

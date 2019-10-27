@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -9,25 +10,28 @@ type MalType int
 
 const (
 	MalTypeDefault MalType = iota
-	MalTypeAtom            // For the purposes of s1 we'll assume all atoms are strings.
+	MalTypeSymbol
+	MalTypeNumber
 	MalTypeList
 )
+
+func (mt MalType) isAtomic() bool {
+	return mt != MalTypeList
+}
 
 type MalForm struct {
 	Type  MalType
 	Value interface{}
 }
 
-func (mf MalForm) Print() {
-	fmt.Print(mf.Sprint())
-}
-
 func (mf MalForm) Sprint() string {
 	var sb strings.Builder
 
 	switch mf.Type {
-	case MalTypeAtom:
+	case MalTypeSymbol:
 		sb.WriteString(mf.Value.(string))
+	case MalTypeNumber:
+		sb.WriteString(strconv.Itoa(mf.Value.(int)))
 	case MalTypeList:
 		sb.WriteString("(")
 
@@ -45,4 +49,8 @@ func (mf MalForm) Sprint() string {
 		panic(fmt.Sprintf("Invalid MalType, mf=%v\n", mf))
 	}
 	return sb.String()
+}
+
+func (mf MalForm) Print() {
+	fmt.Print(mf.Sprint())
 }

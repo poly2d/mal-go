@@ -6,8 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// Temporary test to check regexp FindStringAll
-// outputs what I am expecting.
+// For verifying behavior of regexp FindStringAll.
 func TestTokenize(t *testing.T) {
 	tokens := tokenize("     (+ 2 (* 3 4))")
 	assert.Equal(t, 9, len(tokens))

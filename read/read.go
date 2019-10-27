@@ -38,11 +38,8 @@ func readForm(r reader) model.MalForm {
 	case "(":
 		r.next() // Discard open paren.
 		return readList(r)
-	default:
-		return readAtom(r)
-
 	}
-	return model.MalForm{}
+	return readAtom(r)
 }
 
 func ReadStr(in string) model.MalForm {

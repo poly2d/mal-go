@@ -26,7 +26,7 @@ func TestReadStr(t *testing.T) {
 	// Todo: check for panics on ill-formed inputs
 	for _, test := range tests {
 		ast := read.ReadStr(test.in)
-		actual := EvalAst(ast, env.ReplEnv)
+		actual := EvalAst(ast, *env.ReplEnv)
 		assert.Equal(t, test.expected, actual.Sprint())
 	}
 }

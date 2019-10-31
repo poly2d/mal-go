@@ -7,6 +7,8 @@ const (
 	MalTypeSymbol
 	MalTypeNumber
 	MalTypeList
+
+	MalTypeFunc
 )
 
 func (mt MalType) isAtomic() bool {

@@ -12,11 +12,7 @@ func getFunc(mf model.MalForm, env model.MalEnv) model.MalFunc {
 	}
 
 	sym := mf.Value.(string)
-	f, exist := env.Data[sym]
-	if !exist {
-		panic(fmt.Sprintf("Symbol %s does not exist in env", sym))
-	}
-
+	f := env.Get(sym).Value.(model.MalFunc)
 	return f
 }
 

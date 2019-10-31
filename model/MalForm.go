@@ -6,19 +6,6 @@ import (
 	"strings"
 )
 
-type MalType int
-
-const (
-	MalTypeDefault MalType = iota
-	MalTypeSymbol
-	MalTypeNumber
-	MalTypeList
-)
-
-func (mt MalType) isAtomic() bool {
-	return mt != MalTypeList
-}
-
 type MalForm struct {
 	Type  MalType
 	Value interface{}
@@ -54,7 +41,3 @@ func (mf MalForm) Sprint() string {
 func (mf MalForm) Print() {
 	fmt.Print(mf.Sprint())
 }
-
-type MalFunc func([]MalForm) MalForm
-
-type MalEnv map[string]MalFunc

@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/poly2d/mal-go/env"
 	"github.com/poly2d/mal-go/read"
+	env "github.com/poly2d/mal-go/replEnv"
 )
 
 func TestReadStr(t *testing.T) {

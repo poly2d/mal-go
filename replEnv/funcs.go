@@ -1,17 +1,10 @@
-package env
+package replEnv
 
 import (
 	"fmt"
 
 	"github.com/poly2d/mal-go/model"
 )
-
-var ReplEnv = model.MalEnv{
-	"+": Add,
-	"-": Sub,
-	"*": Mul,
-	"/": Div,
-}
 
 func argCheck(args []model.MalForm, expectedTypes ...model.MalType) {
 	actLen := len(args)

@@ -7,9 +7,9 @@ import (
 var ReplEnv = model.NewMalEnv(
 	nil,
 	map[string]model.MalForm{
-		"+": GetMalFormFunc(Add),
-		"-": GetMalFormFunc(Sub),
-		"*": GetMalFormFunc(Mul),
-		"/": GetMalFormFunc(Div),
+		"+": Add.AsMalForm(),
+		"-": Sub.AsMalForm(),
+		"*": Mul.AsMalForm(),
+		"/": Div.AsMalForm(),
 	},
 )

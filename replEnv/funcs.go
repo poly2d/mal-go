@@ -31,29 +31,29 @@ func numForm(val int) model.MalForm {
 	}
 }
 
-func Add(args []model.MalForm) model.MalForm {
+func add(args []model.MalForm) model.MalForm {
 	argCheck(args, model.MalTypeNumber, model.MalTypeNumber)
 	return numForm(args[0].Value.(int) + args[1].Value.(int))
 }
 
-func Sub(args []model.MalForm) model.MalForm {
+func sub(args []model.MalForm) model.MalForm {
 	argCheck(args, model.MalTypeNumber, model.MalTypeNumber)
 	return numForm(args[0].Value.(int) - args[1].Value.(int))
 }
 
-func Mul(args []model.MalForm) model.MalForm {
+func mul(args []model.MalForm) model.MalForm {
 	argCheck(args, model.MalTypeNumber, model.MalTypeNumber)
 	return numForm(args[0].Value.(int) * args[1].Value.(int))
 }
 
-func Div(args []model.MalForm) model.MalForm {
+func div(args []model.MalForm) model.MalForm {
 	argCheck(args, model.MalTypeNumber, model.MalTypeNumber)
 	return numForm(int(args[0].Value.(int) / args[1].Value.(int)))
 }
 
-func GetMalFormFunc(f model.MalFunc) model.MalForm {
-	return model.MalForm{
-		Type:  model.MalTypeFunc,
-		Value: f,
-	}
-}
+var (
+	Add = model.MalFunc(add)
+	Sub = model.MalFunc(sub)
+	Mul = model.MalFunc(mul)
+	Div = model.MalFunc(div)
+)

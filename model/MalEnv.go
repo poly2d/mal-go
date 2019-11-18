@@ -22,7 +22,7 @@ func (env *MalEnv) Find(key string) *MalEnv {
 func (env *MalEnv) Get(key string) MalForm {
 	envWithKey := env.Find(key)
 	if envWithKey == nil {
-		panic("symbol not found")
+		panic("symbol " + key + " not found")
 	}
 	return envWithKey.data[key]
 }

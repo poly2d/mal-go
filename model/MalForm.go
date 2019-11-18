@@ -42,14 +42,25 @@ func (mf MalForm) Print() {
 	fmt.Print(mf.Sprint())
 }
 
+func (mf MalForm) ValString() string {
+	return mf.Value.(string)
+}
+
 func (mf MalForm) ValInt() int {
 	return mf.Value.(int)
+}
+
+func (mf MalForm) ValList() []MalForm {
+	return mf.Value.([]MalForm)
 }
 
 func (mf MalForm) ValMalFunc() MalFunc {
 	return mf.Value.(MalFunc)
 }
 
-func (mf MalForm) ValString() string {
-	return mf.Value.(string)
+func (mf MalForm) IsSpecialForm() bool {
+	if mf.Type != MalTypeSymbol {
+		return false
+	}
+	return IsSpecialForm(mf.ValString())
 }

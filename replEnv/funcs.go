@@ -33,22 +33,22 @@ func numForm(val int) model.MalForm {
 
 func add(args []model.MalForm) model.MalForm {
 	argCheck(args, model.MalTypeNumber, model.MalTypeNumber)
-	return numForm(args[0].Value.(int) + args[1].Value.(int))
+	return numForm(args[0].ValInt() + args[1].ValInt())
 }
 
 func sub(args []model.MalForm) model.MalForm {
 	argCheck(args, model.MalTypeNumber, model.MalTypeNumber)
-	return numForm(args[0].Value.(int) - args[1].Value.(int))
+	return numForm(args[0].ValInt() - args[1].ValInt())
 }
 
 func mul(args []model.MalForm) model.MalForm {
 	argCheck(args, model.MalTypeNumber, model.MalTypeNumber)
-	return numForm(args[0].Value.(int) * args[1].Value.(int))
+	return numForm(args[0].ValInt() * args[1].ValInt())
 }
 
 func div(args []model.MalForm) model.MalForm {
 	argCheck(args, model.MalTypeNumber, model.MalTypeNumber)
-	return numForm(int(args[0].Value.(int) / args[1].Value.(int)))
+	return numForm(int(args[0].ValInt() / args[1].ValInt()))
 }
 
 var (

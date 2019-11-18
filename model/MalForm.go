@@ -41,3 +41,15 @@ func (mf MalForm) Sprint() string {
 func (mf MalForm) Print() {
 	fmt.Print(mf.Sprint())
 }
+
+func (mf MalForm) ValInt() int {
+	return mf.Value.(int)
+}
+
+func (mf MalForm) ValMalFunc() MalFunc {
+	return mf.Value.(MalFunc)
+}
+
+func (mf MalForm) ValString() string {
+	return mf.Value.(string)
+}

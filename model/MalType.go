@@ -10,7 +10,3 @@ const (
 
 	MalTypeFunc
 )
-
-func (mt MalType) isAtomic() bool {
-	return mt != MalTypeList
-}

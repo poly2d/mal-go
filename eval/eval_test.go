@@ -57,8 +57,12 @@ func TestReadStr(t *testing.T) {
 	})
 }
 
-func TestSpecialFormDef(t *testing.T) {
+func TestSpecialForms(t *testing.T) {
 	runEval(t, []testCase{
+		{
+			in:          "a",
+			expectPanic: true,
+		},
 		{
 			in:        "(def! a 6)",
 			expectOut: "6",
@@ -75,5 +79,21 @@ func TestSpecialFormDef(t *testing.T) {
 			in:        "(+ a b)",
 			expectOut: "14",
 		},
+		{
+			in:        "(let* (c 5) c)",
+			expectOut: "5",
+		},
+		{
+			in:          "c",
+			expectPanic: true,
+		},
+		{
+			in:        "(let* (c 2 d 4) (+ b (* c a)))",
+			expectOut: "20",
+		},
 	})
+}
+
+func TestSpecialFormLet(t *testing.T) {
+	runEval(t, []testCase{})
 }

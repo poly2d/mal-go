@@ -4,10 +4,12 @@ type SpecialForm string
 
 const (
 	SpecialFormDef SpecialForm = "def!"
+	SpecialFormLet SpecialForm = "let*"
 )
 
 var specialForms = []SpecialForm{
 	SpecialFormDef,
+	SpecialFormLet,
 }
 
 func IsSpecialForm(str string) bool {

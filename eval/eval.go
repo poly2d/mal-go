@@ -27,18 +27,30 @@ func EvalAst(ast model.MalForm, env model.MalEnv) model.MalForm {
 		if len(list) == 0 {
 			return ast
 		}
-		// Handle special forms
+
+		// Handle special forms.
 		lead := list[0]
 		if lead.IsSpecialForm() {
 			sym := lead.ValString()
-
-			// Handle special forms
 			switch model.SpecialForm(sym) {
 			case model.SpecialFormDef:
 				key := list[1].ValString()
 				val := EvalAst(list[2], env)
 				env.Set(key, val)
 				return val
+
+			case model.SpecialFormLet:
+				bindingList := list[1].ValList()
+				initMap := map[string]model.MalForm{}
+				for i := 0; i < len(bindingList); i += 2 {
+					key := bindingList[i].ValString()
+					if i+1 >= len(bindingList) {
+						panic("Unexpected symbol " + key + " - no value specified")
+					}
+					initMap[key] = bindingList[i+1]
+				}
+				letEnv := model.NewMalEnv(&env, initMap)
+				return EvalAst(list[2], *letEnv)
 
 			default:
 				panic("Unimplemented special form " + sym)

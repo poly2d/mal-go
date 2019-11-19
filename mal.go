@@ -6,10 +6,10 @@ import (
 	"io"
 	"os"
 
-	"github.com/poly2d/mal-go/eval"
-	"github.com/poly2d/mal-go/model"
-	"github.com/poly2d/mal-go/read"
-	"github.com/poly2d/mal-go/replEnv"
+	"github.com/poly2d/malgo/eval"
+	"github.com/poly2d/malgo/model"
+	"github.com/poly2d/malgo/read"
+	"github.com/poly2d/malgo/replEnv"
 )
 
 func mRead(in string) model.MalForm {

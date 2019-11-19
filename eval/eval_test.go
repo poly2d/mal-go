@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/poly2d/mal-go/read"
-	env "github.com/poly2d/mal-go/replEnv"
+	"github.com/poly2d/malgo/read"
+	env "github.com/poly2d/malgo/replEnv"
 )
 
 type testCase struct {

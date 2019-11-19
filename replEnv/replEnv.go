@@ -1,7 +1,7 @@
 package replEnv
 
 import (
-	"github.com/poly2d/mal-go/model"
+	"github.com/poly2d/malgo/model"
 )
 
 var ReplEnv = model.NewMalEnv(

@@ -3,7 +3,7 @@ package replEnv
 import (
 	"fmt"
 
-	"github.com/poly2d/mal-go/model"
+	"github.com/poly2d/malgo/model"
 )
 
 func argCheck(args []model.MalForm, expectedTypes ...model.MalType) {

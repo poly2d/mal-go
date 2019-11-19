@@ -1,6 +1,6 @@
 package eval
 
-import "github.com/poly2d/mal-go/model"
+import "github.com/poly2d/malgo/model"
 
 func evalList(list []model.MalForm, env model.MalEnv) model.MalForm {
 	lead := list[0]

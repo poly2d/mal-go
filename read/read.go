@@ -3,7 +3,7 @@ package read
 import (
 	"strconv"
 
-	"github.com/poly2d/mal-go/model"
+	"github.com/poly2d/malgo/model"
 )
 
 func readAtom(r reader) model.MalForm {

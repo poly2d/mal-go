@@ -50,6 +50,18 @@ func EvalAst(ast model.MalForm, env model.MalEnv) model.MalForm {
 				}
 				return c.AsMalForm()
 
+			case model.SpecialFormIf:
+				cond := EvalAst(list[1], env).ValBool()
+				if cond {
+					return EvalAst(list[2], env)
+				}
+				if len(list) != 4 { // Return nil if expr for false path is not provided.
+					return model.MalForm{
+						Type: model.MalTypeNil,
+					}
+				}
+				return EvalAst(list[3], env)
+
 			case model.SpecialFormLet:
 				bindingList := list[1].ValList()
 				initMap := map[string]model.MalForm{}

@@ -9,15 +9,16 @@ func getCoreFuncs() map[string]model.MalForm {
 		"*": mul,
 		"/": div,
 
+		"=":  eq,
 		"<":  lt,
 		"<=": lte,
 		">":  gt,
 		">=": gte,
 
-		"list": list,
-		"list?": listQ,
+		"list":   list,
+		"list?":  listQ,
 		"empty?": emptyQ,
-		"count": count,
+		"count":  count,
 
 		"prn": prn,
 	}

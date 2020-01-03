@@ -43,7 +43,7 @@ func readList(r reader) model.MalForm {
 
 		switch mf.Type {
 		case model.MalTypeSymbol:
-			str := mf.Value.(string)
+			str := mf.ValString()
 			if str == ")" {
 				return model.MalForm{
 					model.MalTypeList,

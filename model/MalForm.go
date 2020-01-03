@@ -17,14 +17,17 @@ func (mf MalForm) Sprint() string {
 	switch mf.Type {
 	case MalTypeNil:
 		sb.WriteString("<nil>")
-	case MalTypeBool, MalTypeSymbol:
-		sb.WriteString(mf.Value.(string))
+	case MalTypeFunc, MalTypeClosure:
+		sb.WriteString("#<function>")
+	case MalTypeBool:
+		sb.WriteString(strconv.FormatBool(mf.ValBool()))
+	case MalTypeSymbol:
+		sb.WriteString(mf.ValString())
 	case MalTypeNumber:
-		sb.WriteString(strconv.Itoa(mf.Value.(int)))
+		sb.WriteString(strconv.Itoa(mf.ValInt()))
 	case MalTypeList:
 		sb.WriteString("(")
-
-		vals := mf.Value.([]MalForm)
+		vals := mf.ValList()
 		for i, val := range vals {
 			sb.WriteString(val.Sprint())
 
@@ -34,8 +37,6 @@ func (mf MalForm) Sprint() string {
 				sb.WriteString(" ")
 			}
 		}
-	case MalTypeFunc, MalTypeClosure:
-		sb.WriteString("#<function>")
 	default:
 		panic(fmt.Sprintf("Invalid MalType, mf=%v\n", mf))
 	}

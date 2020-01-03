@@ -62,7 +62,7 @@ func EvalAst(ast model.MalForm, env model.MalEnv) model.MalForm {
 
 			case model.SpecialFormDo:
 				var val model.MalForm
-				for _, ast := range(list[1:]){
+				for _, ast := range list[1:] {
 					val = EvalAst(ast, env)
 				}
 				return val

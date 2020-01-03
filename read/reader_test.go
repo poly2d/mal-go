@@ -39,6 +39,9 @@ func TestReaderImpl(t *testing.T) {
 		{"123", []string{"123"}},
 		{"( 123 456 789 )", []string{"(", "123", "456", "789", ")"}},
 		{"     (+ 2 (* 3 4))", []string{"(", "+", "2", "(", "*", "3", "4", ")", ")"}},
+		{"     true", []string{"true"}},
+		{"     false  ", []string{"false"}},
+		{"nil  ", []string{"nil"}},
 	}
 
 	for _, test := range readerTests {

@@ -15,7 +15,9 @@ func (mf MalForm) Sprint() string {
 	var sb strings.Builder
 
 	switch mf.Type {
-	case MalTypeSymbol:
+	case MalTypeNil:
+		sb.WriteString("<nil>")
+	case MalTypeBool, MalTypeSymbol:
 		sb.WriteString(mf.Value.(string))
 	case MalTypeNumber:
 		sb.WriteString(strconv.Itoa(mf.Value.(int)))
@@ -40,6 +42,10 @@ func (mf MalForm) Sprint() string {
 
 func (mf MalForm) Print() {
 	fmt.Print(mf.Sprint())
+}
+
+func (mf MalForm) ValBool() bool {
+	return mf.Value.(bool)
 }
 
 func (mf MalForm) ValString() string {

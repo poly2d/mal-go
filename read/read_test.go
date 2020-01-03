@@ -15,6 +15,7 @@ func TestReadStr(t *testing.T) {
 		{"123   ", "123"},
 		{"( 123 456 789 )", "(123 456 789)"},
 		{"     (+ 2 (* 3   4 )  )", "(+ 2 (* 3 4))"},
+		{"nil", "<nil>"},
 	}
 
 	for _, test := range tests {

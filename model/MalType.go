@@ -3,7 +3,8 @@ package model
 type MalType int
 
 const (
-	MalTypeUnit MalType = iota
+	MalTypeNil MalType = iota
+	MalTypeBool
 	MalTypeSymbol
 	MalTypeNumber
 	MalTypeList

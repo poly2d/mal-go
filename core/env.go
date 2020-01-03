@@ -1,8 +1,6 @@
 package core
 
-import (
-	"github.com/poly2d/malgo/model"
-)
+import "github.com/poly2d/malgo/model"
 
 func getCoreFuncs() map[string]model.MalForm {
 	coreFuncs := map[string](func(args []model.MalForm) model.MalForm){
@@ -10,6 +8,11 @@ func getCoreFuncs() map[string]model.MalForm {
 		"-": sub,
 		"*": mul,
 		"/": div,
+
+		"<":  lt,
+		"<=": lte,
+		">":  gt,
+		">=": gte,
 	}
 
 	mfMap := map[string]model.MalForm{}

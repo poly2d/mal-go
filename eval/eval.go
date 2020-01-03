@@ -9,9 +9,26 @@ import (
 func evalList(list []model.MalForm, env model.MalEnv) model.MalForm {
 	lead := list[0]
 	switch lead.Type {
+	case model.MalTypeClosure:
+		mc := lead.ValMalClosure()
+		binds := mc.Params.ValList()
+		exprs := list[1:]
+		if len(binds) != len(exprs) {
+			panic(fmt.Sprintf("Expected %d params in expression for closure", len(binds)))
+		}
+		initMap := map[string]model.MalForm{}
+		for i := range binds {
+			key := binds[i].ValString()
+			val := EvalAst(exprs[i], env)
+			initMap[key] = val
+		}
+		closureEnv := model.NewMalEnv(&env, initMap)
+		return EvalAst(mc.Body, *closureEnv)
+
 	case model.MalTypeFunc:
 		malFunc := lead.ValMalFunc()
 		return malFunc(list[1:])
+
 	case model.MalTypeSymbol:
 		panic("Unexpected symbol " + lead.ValString())
 	}
@@ -41,6 +58,13 @@ func EvalAst(ast model.MalForm, env model.MalEnv) model.MalForm {
 				key := list[1].ValString()
 				val := EvalAst(list[2], env)
 				env.Set(key, val)
+				return val
+
+			case model.SpecialFormDo:
+				var val model.MalForm
+				for _, ast := range(list[1:]){
+					val = EvalAst(ast, env)
+				}
 				return val
 
 			case model.SpecialFormFn:
@@ -84,26 +108,6 @@ func EvalAst(ast model.MalForm, env model.MalEnv) model.MalForm {
 		for _, member := range list {
 			newList = append(newList, EvalAst(member, env))
 		}
-
-		// Handle Closures
-		if newList[0].Type == model.MalTypeClosure {
-			mc := newList[0].ValMalClosure()
-			binds := mc.Params.ValList()
-			exprs := list[1:]
-			if len(binds) != len(exprs) {
-				panic(fmt.Sprintf("Expected %d params in expression for closure", len(binds)))
-			}
-			initMap := map[string]model.MalForm{}
-			for i := range binds {
-				key := binds[i].ValString()
-				val := EvalAst(exprs[i], env)
-				initMap[key] = val
-			}
-
-			closureEnv := model.NewMalEnv(&env, initMap)
-			return EvalAst(mc.Body, *closureEnv)
-		}
-
 		return evalList(newList, env)
 
 	case model.MalTypeSymbol:

@@ -1,4 +1,4 @@
-package replEnv
+package core
 
 import (
 	"fmt"
@@ -50,10 +50,3 @@ func div(args []model.MalForm) model.MalForm {
 	argCheck(args, model.MalTypeNumber, model.MalTypeNumber)
 	return numForm(int(args[0].ValInt() / args[1].ValInt()))
 }
-
-var (
-	Add = model.MalFunc(add)
-	Sub = model.MalFunc(sub)
-	Mul = model.MalFunc(mul)
-	Div = model.MalFunc(div)
-)

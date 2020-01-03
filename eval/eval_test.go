@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/poly2d/malgo/core"
 	"github.com/poly2d/malgo/read"
-	env "github.com/poly2d/malgo/replEnv"
 )
 
 type testCase struct {
@@ -20,13 +20,13 @@ func runEval(t *testing.T, tests []testCase) {
 		ast := read.ReadStr(test.in)
 		if test.expectPanic {
 			testFunc := func() {
-				EvalAst(ast, *env.ReplEnv)
+				EvalAst(ast, *core.Env)
 			}
 			assert.Panics(t, testFunc, "EvalAst did not panic")
 			continue
 		}
 
-		actual := EvalAst(ast, *env.ReplEnv)
+		actual := EvalAst(ast, *core.Env)
 		assert.Equal(t, test.expectOut, actual.Sprint())
 	}
 }

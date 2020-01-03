@@ -4,11 +4,13 @@ type SpecialForm string
 
 const (
 	SpecialFormDef SpecialForm = "def!"
+	SpecialFormFn  SpecialForm = "fn*"
 	SpecialFormLet SpecialForm = "let*"
 )
 
 var specialForms = []SpecialForm{
 	SpecialFormDef,
+	SpecialFormFn,
 	SpecialFormLet,
 }
 

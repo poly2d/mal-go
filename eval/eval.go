@@ -39,6 +39,15 @@ func EvalAst(ast model.MalForm, env model.MalEnv) model.MalForm {
 				env.Set(key, val)
 				return val
 
+			case model.SpecialFormFn:
+				params := list[1]
+				body := list[2] // Not evaluated
+				c := model.MalClosure{
+					Params: params,
+					Body:   body,
+				}
+				return c.AsMalForm()
+
 			case model.SpecialFormLet:
 				bindingList := list[1].ValList()
 				initMap := map[string]model.MalForm{}

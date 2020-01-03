@@ -8,6 +8,7 @@ const (
 	MalTypeSymbol
 	MalTypeNumber
 	MalTypeList
+	MalTypeClosure
 
 	MalTypeFunc
 )

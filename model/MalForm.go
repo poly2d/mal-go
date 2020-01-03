@@ -34,6 +34,8 @@ func (mf MalForm) Sprint() string {
 				sb.WriteString(" ")
 			}
 		}
+	case MalTypeFunc, MalTypeClosure:
+		sb.WriteString("#<function>")
 	default:
 		panic(fmt.Sprintf("Invalid MalType, mf=%v\n", mf))
 	}
@@ -62,6 +64,10 @@ func (mf MalForm) ValList() []MalForm {
 
 func (mf MalForm) ValMalFunc() MalFunc {
 	return mf.Value.(MalFunc)
+}
+
+func (mf MalForm) ValMalClosure() MalClosure {
+	return mf.Value.(MalClosure)
 }
 
 func (mf MalForm) IsSpecialForm() bool {

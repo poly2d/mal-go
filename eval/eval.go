@@ -1,6 +1,10 @@
 package eval
 
-import "github.com/poly2d/malgo/model"
+import (
+	"fmt"
+
+	"github.com/poly2d/malgo/model"
+)
 
 func evalList(list []model.MalForm, env model.MalEnv) model.MalForm {
 	lead := list[0]
@@ -40,11 +44,9 @@ func EvalAst(ast model.MalForm, env model.MalEnv) model.MalForm {
 				return val
 
 			case model.SpecialFormFn:
-				params := list[1]
-				body := list[2] // Not evaluated
 				c := model.MalClosure{
-					Params: params,
-					Body:   body,
+					Params: list[1],
+					Body:   list[2], // Not evaluated
 				}
 				return c.AsMalForm()
 
@@ -65,10 +67,31 @@ func EvalAst(ast model.MalForm, env model.MalEnv) model.MalForm {
 				panic("Unimplemented special form " + sym)
 			}
 		}
+
 		newList := []model.MalForm{}
 		for _, member := range list {
 			newList = append(newList, EvalAst(member, env))
 		}
+
+		// Handle Closures
+		if newList[0].Type == model.MalTypeClosure {
+			mc := newList[0].ValMalClosure()
+			binds := mc.Params.ValList()
+			exprs := list[1:]
+			if len(binds) != len(exprs) {
+				panic(fmt.Sprintf("Expected %d params in expression for closure", len(binds)))
+			}
+			initMap := map[string]model.MalForm{}
+			for i := range binds {
+				key := binds[i].ValString()
+				val := EvalAst(exprs[i], env)
+				initMap[key] = val
+			}
+
+			closureEnv := model.NewMalEnv(&env, initMap)
+			return EvalAst(mc.Body, *closureEnv)
+		}
+
 		return evalList(newList, env)
 
 	case model.MalTypeSymbol:

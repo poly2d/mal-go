@@ -57,7 +57,7 @@ func TestReadStr(t *testing.T) {
 	})
 }
 
-func TestSpecialForms(t *testing.T) {
+func TestSpecialFormsDefLet(t *testing.T) {
 	runEval(t, []testCase{
 		{
 			in:          "a",
@@ -94,6 +94,31 @@ func TestSpecialForms(t *testing.T) {
 	})
 }
 
-func TestSpecialFormLet(t *testing.T) {
-	runEval(t, []testCase{})
+func TestSpecialFormFn(t *testing.T) {
+	runEval(t, []testCase{
+		{
+			in:        "(fn* (a) a)",
+			expectOut: "#<function>",
+		},
+		{
+			in:        "( (fn* (a) a) 7)",
+			expectOut: "7",
+		},
+		{
+			in:        "( (fn* (a) (+ a 1)) 10)",
+			expectOut: "11",
+		},
+		{
+			in:        "( (fn* (a b) (+ a b)) 2 3)",
+			expectOut: "5",
+		},
+		{
+			in:          "( (fn* (a b) (+ a b)) 2 3 6)",
+			expectPanic: true,
+		},
+		{
+			in:          "( (fn* (a b) (+ a )) 2 3)",
+			expectPanic: true,
+		},
+	})
 }

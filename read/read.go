@@ -19,8 +19,7 @@ func readAtom(r reader) model.MalForm {
 	switch token {
 	case "nil":
 		return model.MalForm{
-			model.MalTypeNil,
-			nil,
+			Type: model.MalTypeNil,
 		}
 	case "true", "false":
 		if b, err := strconv.ParseBool(token); err == nil {

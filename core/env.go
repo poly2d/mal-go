@@ -13,6 +13,13 @@ func getCoreFuncs() map[string]model.MalForm {
 		"<=": lte,
 		">":  gt,
 		">=": gte,
+
+		"list": list,
+		"list?": listQ,
+		"empty?": emptyQ,
+		"count": count,
+
+		"prn": prn,
 	}
 
 	mfMap := map[string]model.MalForm{}

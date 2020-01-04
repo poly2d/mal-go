@@ -123,6 +123,68 @@ func TestSpecialFormFn(t *testing.T) {
 	})
 }
 
+func TestSpecialFormIf(t *testing.T) {
+	runEval(t, []testCase{
+		{
+			in:        "(if true 1 0)",
+			expectOut: "1",
+		},
+		{
+			in:        "(if false 1 0)",
+			expectOut: "0",
+		},
+		{
+			in:        "(if (> 2 1) 1 0)",
+			expectOut: "1",
+		},
+		{
+			in:        "(if (> 1 2) 1 0)",
+			expectOut: "0",
+		},
+		{
+			in:        "(if (> 1 2) 1 (* 2 2))",
+			expectOut: "4",
+		},
+		{
+			in:        "(if true (* 2 2))",
+			expectOut: "4",
+		},
+		{
+			in:        "(if false (* 2 2))",
+			expectOut: "<nil>",
+		},
+		{
+			in:          "(if (> 2 1))",
+			expectPanic: true,
+		},
+	})
+}
+
+func TestSpecialFormDo(t *testing.T) {
+	runEval(t, []testCase{
+		{
+			in:        "(do true)",
+			expectOut: "true",
+		},
+		{
+			in:        "(do true 1)",
+			expectOut: "1",
+		},
+		{
+			in:        "(do true 1 0)",
+			expectOut: "0",
+		},
+		{
+			in:        "(do (prn 4) 2)",
+			expectOut: "2",
+		},
+		{
+			in:        "(do (prn 4))",
+			expectOut: "<nil>",
+		},
+	})
+}
+
 func TestCoreComp(t *testing.T) {
 	runEval(t, []testCase{
 		{

@@ -122,3 +122,157 @@ func TestSpecialFormFn(t *testing.T) {
 		},
 	})
 }
+
+func TestCoreComp(t *testing.T) {
+	runEval(t, []testCase{
+		{
+			in:        "(= 1 2)",
+			expectOut: "false",
+		},
+		{
+			in:        "(= 1 false)",
+			expectOut: "false",
+		},
+		{
+			in:        "(= 0 nil)",
+			expectOut: "false",
+		},
+		{
+			in:        "(= 2 2)",
+			expectOut: "true",
+		},
+		{
+			in:        "(= (+ 2 2) (* 2 2))",
+			expectOut: "true",
+		},
+		{
+			in:        "(= (1 2) (1 2))",
+			expectOut: "true",
+		},
+		{
+			in:        "(= (1 2) (1))",
+			expectOut: "false",
+		},
+		{
+			in:        "(= (1 2) (1 3))",
+			expectOut: "false",
+		},
+		{
+			in:        "(= (1 2 3) (1 3))",
+			expectOut: "false",
+		},
+		{
+			in:        "(< 2 3)",
+			expectOut: "true",
+		},
+		{
+			in:        "(< 3 3)",
+			expectOut: "false",
+		},
+		{
+			in:        "(< 4 3)",
+			expectOut: "false",
+		},
+		{
+			in:        "(<= 2 3)",
+			expectOut: "true",
+		},
+		{
+			in:        "(<= 3 3)",
+			expectOut: "true",
+		},
+		{
+			in:        "(<= 4 3)",
+			expectOut: "false",
+		},
+		{
+			in:        "(> 2 3)",
+			expectOut: "false",
+		},
+		{
+			in:        "(> 3 3)",
+			expectOut: "false",
+		},
+		{
+			in:        "(> 4 3)",
+			expectOut: "true",
+		},
+		{
+			in:        "(>= 2 3)",
+			expectOut: "false",
+		},
+		{
+			in:        "(>= 3 3)",
+			expectOut: "true",
+		},
+		{
+			in:        "(>= 4 3)",
+			expectOut: "true",
+		},
+		{
+			in:          "(> 3)",
+			expectPanic: true,
+		},
+	})
+}
+
+func TestCoreList(t *testing.T) {
+	runEval(t, []testCase{
+		{
+			in:        "(list)",
+			expectOut: "()",
+		},
+		{
+			in:        "(list 2 3 4)",
+			expectOut: "(2 3 4)",
+		},
+		{
+			in:        "(list (1 2) 3 4)",
+			expectOut: "((1 2) 3 4)",
+		},
+		{
+			in:        "(list? 4)",
+			expectOut: "false",
+		},
+		{
+			in:        "(list? nil)",
+			expectOut: "false",
+		},
+		{
+			in:        "(list? ())",
+			expectOut: "true",
+		},
+		{
+			in:        "(list? (1 2 3))",
+			expectOut: "true",
+		},
+		{
+			in:          "(list? (1 2 3) (45))",
+			expectPanic: true,
+		},
+		{
+			in:        "(empty? ())",
+			expectOut: "true",
+		},
+		{
+			in:        "(empty? (1 2))",
+			expectOut: "false",
+		},
+		{
+			in:          "(empty? (1 2) (3))",
+			expectPanic: true,
+		},
+		{
+			in:        "(count ())",
+			expectOut: "0",
+		},
+		{
+			in:        "(count (1 2))",
+			expectOut: "2",
+		},
+		{
+			in:          "(count (1 2) (3))",
+			expectPanic: true,
+		},
+	})
+}

@@ -28,6 +28,10 @@ func (mf MalForm) Sprint() string {
 	case MalTypeList:
 		sb.WriteString("(")
 		vals := mf.ValList()
+		if len(vals) == 0 {
+			sb.WriteString(")")
+			return sb.String()
+		}
 		for i, val := range vals {
 			sb.WriteString(val.Sprint())
 

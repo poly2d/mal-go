@@ -16,8 +16,16 @@ cd $GOPATH/src/github.com/poly2d/malgo && go run mal.go
 ```
 
 #### Special Forms
-Currently available: `def! let*`
+`def! do fn* if let*`
 
-#### Built-in Funcs
+#### Core Functions
+- Arithmetic: `+ - * /`
+- Comparators: `= < <= > >=`
+- List: `list list? empty? count`
+- Print: `prn`
 
-Currently available: `+ - * /`
+### Todos
+- Continue guide (steps 5+ and deferrables)
+- Handle panics
+- Automate testing
+  - e.g. Makefile, Github workflow

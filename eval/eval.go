@@ -6,44 +6,16 @@ import (
 	"github.com/poly2d/malgo/model"
 )
 
-func evalList(list []model.MalForm, env *model.MalEnv) model.MalForm {
-	lead := list[0]
-	switch lead.Type {
-	case model.MalTypeClosure:
-		mc := lead.ValMalClosure()
-		binds := mc.Params.ValList()
-		exprs := list[1:]
-		if len(binds) != len(exprs) {
-			panic(fmt.Sprintf("Expected %d params in expression for closure", len(binds)))
-		}
-		initMap := map[string]model.MalForm{}
-		for i := range binds {
-			key := binds[i].ValString()
-			val := EvalAst(exprs[i], env)
-			initMap[key] = val
-		}
-		closureEnv := model.NewMalEnv(env, initMap)
-		return EvalAst(mc.Body, closureEnv)
-
-	case model.MalTypeFunc:
-		malFunc := lead.ValMalFunc()
-		return malFunc(list[1:])
-
-	case model.MalTypeSymbol:
-		panic("Unexpected symbol " + lead.ValString())
-	}
-
-	// Default case for now: return list as is.
-	// Perhaps its more proper to print a err msg.
-	return model.MalForm{
-		model.MalTypeList,
-		list,
-	}
-}
-
 func EvalAst(ast model.MalForm, env *model.MalEnv) model.MalForm {
-	for {	// Loop is used here for Tail-call optimization.
+	for { // Loop is used here for Tail-call optimization.
 		switch ast.Type {
+
+		case model.MalTypeSymbol:
+			if ast.IsSpecialForm() {
+				return ast
+			}
+			return env.Get(ast.ValString())
+
 		case model.MalTypeList:
 			list := ast.ValList()
 			if len(list) == 0 {
@@ -73,6 +45,7 @@ func EvalAst(ast model.MalForm, env *model.MalEnv) model.MalForm {
 					c := model.MalClosure{
 						Params: list[1],
 						Body:   list[2], // Not evaluated
+						Env:    env,
 					}
 					return c.AsMalForm()
 
@@ -113,13 +86,46 @@ func EvalAst(ast model.MalForm, env *model.MalEnv) model.MalForm {
 			for _, member := range list {
 				newList = append(newList, EvalAst(member, env))
 			}
-			return evalList(newList, env)
 
-		case model.MalTypeSymbol:
-			if ast.IsSpecialForm() {
-				return ast
+			{
+				// This block was initially a separate func (evalList), but was moved here for TCO.
+				list := newList
+				lead := list[0]
+				switch lead.Type {
+
+				case model.MalTypeFunc:
+					malFunc := lead.ValMalFunc()
+					return malFunc(list[1:])
+
+				case model.MalTypeClosure:
+					mc := lead.ValMalClosure()
+					binds := mc.Params.ValList()
+					exprs := list[1:]
+					if len(binds) != len(exprs) {
+						panic(fmt.Sprintf("Expected %d params in expression for closure", len(binds)))
+					}
+					initMap := map[string]model.MalForm{}
+					for i := range binds {
+						key := binds[i].ValString()
+						val := EvalAst(exprs[i], mc.Env)
+						initMap[key] = val
+					}
+
+					ast = mc.Body
+					env = model.NewMalEnv(mc.Env, initMap)
+					continue
+
+				case model.MalTypeSymbol:
+					panic("Unexpected symbol " + lead.ValString())
+				}
+
+				// Default case for now: return list as is.
+				// Perhaps its more proper to print a err msg.
+				return model.MalForm{
+					model.MalTypeList,
+					list,
+				}
 			}
-			return env.Get(ast.ValString())
 		}
 
 		return ast

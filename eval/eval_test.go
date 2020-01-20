@@ -20,13 +20,13 @@ func runEval(t *testing.T, tests []testCase) {
 		ast := read.ReadStr(test.in)
 		if test.expectPanic {
 			testFunc := func() {
-				EvalAst(ast, *core.Env)
+				EvalAst(ast, core.Env)
 			}
 			assert.Panics(t, testFunc, "EvalAst did not panic")
 			continue
 		}
 
-		actual := EvalAst(ast, *core.Env)
+		actual := EvalAst(ast, core.Env)
 		assert.Equal(t, test.expectOut, actual.Sprint())
 	}
 }

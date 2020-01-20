@@ -6,7 +6,7 @@ import (
 	"github.com/poly2d/malgo/model"
 )
 
-func evalList(list []model.MalForm, env model.MalEnv) model.MalForm {
+func evalList(list []model.MalForm, env *model.MalEnv) model.MalForm {
 	lead := list[0]
 	switch lead.Type {
 	case model.MalTypeClosure:
@@ -22,8 +22,8 @@ func evalList(list []model.MalForm, env model.MalEnv) model.MalForm {
 			val := EvalAst(exprs[i], env)
 			initMap[key] = val
 		}
-		closureEnv := model.NewMalEnv(&env, initMap)
-		return EvalAst(mc.Body, *closureEnv)
+		closureEnv := model.NewMalEnv(env, initMap)
+		return EvalAst(mc.Body, closureEnv)
 
 	case model.MalTypeFunc:
 		malFunc := lead.ValMalFunc()
@@ -41,81 +41,87 @@ func evalList(list []model.MalForm, env model.MalEnv) model.MalForm {
 	}
 }
 
-func EvalAst(ast model.MalForm, env model.MalEnv) model.MalForm {
-	switch ast.Type {
-	case model.MalTypeList:
-		list := ast.ValList()
-		if len(list) == 0 {
-			return ast
-		}
-
-		// Handle special forms.
-		lead := list[0]
-		if lead.IsSpecialForm() {
-			sym := lead.ValString()
-			switch model.SpecialForm(sym) {
-			case model.SpecialFormDef:
-				key := list[1].ValString()
-				val := EvalAst(list[2], env)
-				env.Set(key, val)
-				return val
-
-			case model.SpecialFormDo:
-				var val model.MalForm
-				for _, ast := range list[1:] {
-					val = EvalAst(ast, env)
-				}
-				return val
-
-			case model.SpecialFormFn:
-				c := model.MalClosure{
-					Params: list[1],
-					Body:   list[2], // Not evaluated
-				}
-				return c.AsMalForm()
-
-			case model.SpecialFormIf:
-				cond := EvalAst(list[1], env).ValBool()
-				if cond {
-					return EvalAst(list[2], env)
-				}
-				if len(list) != 4 { // Return nil if expr for false path is not provided.
-					return model.MalForm{
-						Type: model.MalTypeNil,
-					}
-				}
-				return EvalAst(list[3], env)
-
-			case model.SpecialFormLet:
-				bindingList := list[1].ValList()
-				initMap := map[string]model.MalForm{}
-				for i := 0; i < len(bindingList); i += 2 {
-					key := bindingList[i].ValString()
-					if i+1 >= len(bindingList) {
-						panic("Unexpected symbol " + key + " - no value specified")
-					}
-					initMap[key] = bindingList[i+1]
-				}
-				letEnv := model.NewMalEnv(&env, initMap)
-				return EvalAst(list[2], *letEnv)
-
-			default:
-				panic("Unimplemented special form " + sym)
+func EvalAst(ast model.MalForm, env *model.MalEnv) model.MalForm {
+	for {	// Loop is used here for Tail-call optimization.
+		switch ast.Type {
+		case model.MalTypeList:
+			list := ast.ValList()
+			if len(list) == 0 {
+				return ast
 			}
+
+			// Handle special forms.
+			lead := list[0]
+			if lead.IsSpecialForm() {
+				sym := lead.ValString()
+				switch model.SpecialForm(sym) {
+				case model.SpecialFormDef:
+					key := list[1].ValString()
+					val := EvalAst(list[2], env)
+					env.Set(key, val)
+					return val
+
+				case model.SpecialFormDo:
+					lastIndex := len(list) - 1
+					for _, doAst := range list[1:lastIndex] {
+						EvalAst(doAst, env)
+					}
+					ast = list[lastIndex]
+					continue
+
+				case model.SpecialFormFn:
+					c := model.MalClosure{
+						Params: list[1],
+						Body:   list[2], // Not evaluated
+					}
+					return c.AsMalForm()
+
+				case model.SpecialFormIf:
+					cond := EvalAst(list[1], env).ValBool()
+					if cond {
+						ast = list[2]
+						continue
+					}
+					if len(list) != 4 { // Return nil if expr for false path is not provided.
+						return model.MalForm{
+							Type: model.MalTypeNil,
+						}
+					}
+					ast = list[3]
+					continue
+
+				case model.SpecialFormLet:
+					bindingList := list[1].ValList()
+					initMap := map[string]model.MalForm{}
+					for i := 0; i < len(bindingList); i += 2 {
+						key := bindingList[i].ValString()
+						if i+1 >= len(bindingList) {
+							panic("Unexpected symbol " + key + " - no value specified")
+						}
+						initMap[key] = bindingList[i+1]
+					}
+					env = model.NewMalEnv(env, initMap)
+					ast = list[2]
+					continue
+
+				default:
+					panic("Unimplemented special form " + sym)
+				}
+			}
+
+			newList := []model.MalForm{}
+			for _, member := range list {
+				newList = append(newList, EvalAst(member, env))
+			}
+			return evalList(newList, env)
+
+		case model.MalTypeSymbol:
+			if ast.IsSpecialForm() {
+				return ast
+			}
+			return env.Get(ast.ValString())
 		}
 
-		newList := []model.MalForm{}
-		for _, member := range list {
-			newList = append(newList, EvalAst(member, env))
-		}
-		return evalList(newList, env)
-
-	case model.MalTypeSymbol:
-		if ast.IsSpecialForm() {
-			return ast
-		}
-		return env.Get(ast.ValString())
+		return ast
 	}
-
-	return ast
 }

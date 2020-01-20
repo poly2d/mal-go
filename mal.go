@@ -17,7 +17,7 @@ func mRead(in string) model.MalForm {
 }
 
 func mEval(mf model.MalForm) model.MalForm {
-	return eval.EvalAst(mf, *core.Env)
+	return eval.EvalAst(mf, core.Env)
 }
 
 func mPrint(in model.MalForm) model.MalForm {

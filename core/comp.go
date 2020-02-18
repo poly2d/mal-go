@@ -7,7 +7,9 @@ import (
 )
 
 func eq(args []model.MalForm) model.MalForm {
-	argLenCheck(args, 2)
+	if err := argLenCheck(args, 2); err != nil {
+		return errForm(err)
+	}
 
 	if args[0].Type != args[1].Type {
 		return boolForm(false)
@@ -30,21 +32,29 @@ func eq(args []model.MalForm) model.MalForm {
 }
 
 func lt(args []model.MalForm) model.MalForm {
-	argCheck(args, model.MalTypeNumber, model.MalTypeNumber)
+	if err := argCheck(args, model.MalTypeNumber, model.MalTypeNumber); err != nil {
+		return errForm(err)
+	}
 	return boolForm(args[0].ValInt() < args[1].ValInt())
 }
 
 func lte(args []model.MalForm) model.MalForm {
-	argCheck(args, model.MalTypeNumber, model.MalTypeNumber)
+	if err := argCheck(args, model.MalTypeNumber, model.MalTypeNumber); err != nil {
+		return errForm(err)
+	}
 	return boolForm(args[0].ValInt() <= args[1].ValInt())
 }
 
 func gt(args []model.MalForm) model.MalForm {
-	argCheck(args, model.MalTypeNumber, model.MalTypeNumber)
+	if err := argCheck(args, model.MalTypeNumber, model.MalTypeNumber); err != nil {
+		return errForm(err)
+	}
 	return boolForm(args[0].ValInt() > args[1].ValInt())
 }
 
 func gte(args []model.MalForm) model.MalForm {
-	argCheck(args, model.MalTypeNumber, model.MalTypeNumber)
+	if err := argCheck(args, model.MalTypeNumber, model.MalTypeNumber); err != nil {
+		return errForm(err)
+	}
 	return boolForm(args[0].ValInt() >= args[1].ValInt())
 }

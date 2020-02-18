@@ -11,8 +11,8 @@ func readAtom(r reader) model.MalForm {
 
 	if num, err := strconv.Atoi(token); err == nil {
 		return model.MalForm{
-			model.MalTypeNumber,
-			num,
+			Type:  model.MalTypeNumber,
+			Value: num,
 		}
 	}
 
@@ -24,15 +24,15 @@ func readAtom(r reader) model.MalForm {
 	case "true", "false":
 		if b, err := strconv.ParseBool(token); err == nil {
 			return model.MalForm{
-				model.MalTypeBool,
-				b,
+				Type:  model.MalTypeBool,
+				Value: b,
 			}
 		}
 	}
 
 	return model.MalForm{
-		model.MalTypeSymbol,
-		token,
+		Type:  model.MalTypeSymbol,
+		Value: token,
 	}
 }
 
@@ -46,8 +46,8 @@ func readList(r reader) model.MalForm {
 			str := mf.ValString()
 			if str == ")" {
 				return model.MalForm{
-					model.MalTypeList,
-					list,
+					Type:  model.MalTypeList,
+					Value: list,
 				}
 			}
 		}

@@ -28,8 +28,21 @@ func mPrint(in model.MalForm) model.MalForm {
 
 func rep(in string) {
 	readRes := mRead(in)
+	if readRes.Err != nil {
+		fmt.Println(readRes.Error())
+		return
+	}
+
 	evalRes := mEval(readRes)
-	mPrint(evalRes)
+	if evalRes.Err != nil {
+		fmt.Println(evalRes.Error())
+		return
+	}
+
+	printRes := mPrint(evalRes)
+	if printRes.Err != nil {
+		fmt.Println(printRes.Error())
+	}
 }
 
 func main() {

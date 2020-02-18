@@ -10,19 +10,18 @@ import (
 )
 
 type testCase struct {
-	in          string
-	expectOut   string
-	expectPanic bool
+	in        string
+	expectOut string
+	expectErr bool
 }
 
 func runEval(t *testing.T, tests []testCase) {
 	for _, test := range tests {
 		ast := read.ReadStr(test.in)
-		if test.expectPanic {
-			testFunc := func() {
-				EvalAst(ast, core.Env)
-			}
-			assert.Panics(t, testFunc, "EvalAst did not panic")
+		if test.expectErr {
+			mf := EvalAst(ast, core.Env)
+			assert.NotNil(t, mf.Err)
+			assert.NotEqual(t, mf.Error(), "")
 			continue
 		}
 
@@ -34,8 +33,8 @@ func runEval(t *testing.T, tests []testCase) {
 func TestReadStr(t *testing.T) {
 	runEval(t, []testCase{
 		{
-			in:          "abc",
-			expectPanic: true,
+			in:        "abc",
+			expectErr: true,
 		},
 		{
 			in:        "123   ",
@@ -60,8 +59,8 @@ func TestReadStr(t *testing.T) {
 func TestSpecialFormsDefLet(t *testing.T) {
 	runEval(t, []testCase{
 		{
-			in:          "a",
-			expectPanic: true,
+			in:        "a",
+			expectErr: true,
 		},
 		{
 			in:        "(def! a 6)",
@@ -84,8 +83,8 @@ func TestSpecialFormsDefLet(t *testing.T) {
 			expectOut: "5",
 		},
 		{
-			in:          "c",
-			expectPanic: true,
+			in:        "c",
+			expectErr: true,
 		},
 		{
 			in:        "(let* (c 2 d 4) (+ b (* c a)))",
@@ -113,12 +112,12 @@ func TestSpecialFormFn(t *testing.T) {
 			expectOut: "5",
 		},
 		{
-			in:          "( (fn* (a b) (+ a b)) 2 3 6)",
-			expectPanic: true,
+			in:        "( (fn* (a b) (+ a b)) 2 3 6)",
+			expectErr: true,
 		},
 		{
-			in:          "( (fn* (a b) (+ a )) 2 3)",
-			expectPanic: true,
+			in:        "( (fn* (a b) (+ a )) 2 3)",
+			expectErr: true,
 		},
 	})
 }
@@ -154,8 +153,8 @@ func TestSpecialFormIf(t *testing.T) {
 			expectOut: "<nil>",
 		},
 		{
-			in:          "(if (> 2 1))",
-			expectPanic: true,
+			in:        "(if (> 2 1))",
+			expectErr: true,
 		},
 	})
 }
@@ -272,8 +271,8 @@ func TestCoreComp(t *testing.T) {
 			expectOut: "true",
 		},
 		{
-			in:          "(> 3)",
-			expectPanic: true,
+			in:        "(> 3)",
+			expectErr: true,
 		},
 	})
 }
@@ -309,8 +308,8 @@ func TestCoreList(t *testing.T) {
 			expectOut: "true",
 		},
 		{
-			in:          "(list? (1 2 3) (45))",
-			expectPanic: true,
+			in:        "(list? (1 2 3) (45))",
+			expectErr: true,
 		},
 		{
 			in:        "(empty? ())",
@@ -321,8 +320,8 @@ func TestCoreList(t *testing.T) {
 			expectOut: "false",
 		},
 		{
-			in:          "(empty? (1 2) (3))",
-			expectPanic: true,
+			in:        "(empty? (1 2) (3))",
+			expectErr: true,
 		},
 		{
 			in:        "(count ())",
@@ -333,8 +332,8 @@ func TestCoreList(t *testing.T) {
 			expectOut: "2",
 		},
 		{
-			in:          "(count (1 2) (3))",
-			expectPanic: true,
+			in:        "(count (1 2) (3))",
+			expectErr: true,
 		},
 	})
 }

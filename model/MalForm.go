@@ -9,6 +9,7 @@ import (
 type MalForm struct {
 	Type  MalType
 	Value interface{}
+	Err   error
 }
 
 func (mf MalForm) Sprint() string {
@@ -49,6 +50,13 @@ func (mf MalForm) Sprint() string {
 
 func (mf MalForm) Print() {
 	fmt.Print(mf.Sprint())
+}
+
+func (mf MalForm) Error() string {
+	if mf.Err == nil {
+		return ""
+	}
+	return mf.Err.Error()
 }
 
 func (mf MalForm) ValBool() bool {

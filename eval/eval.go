@@ -29,14 +29,21 @@ func EvalAst(ast model.MalForm, env *model.MalEnv) model.MalForm {
 				switch model.SpecialForm(sym) {
 				case model.SpecialFormDef:
 					key := list[1].ValString()
+					// TODO check error field before setting
 					val := EvalAst(list[2], env)
-					env.Set(key, val)
+					if val.Err == nil {
+						env.Set(key, val)
+					}
 					return val
 
 				case model.SpecialFormDo:
 					lastIndex := len(list) - 1
 					for _, doAst := range list[1:lastIndex] {
-						EvalAst(doAst, env)
+						// TODO check error field before moving on
+						ea := EvalAst(doAst, env)
+						if ea.Err != nil {
+							return ea
+						}
 					}
 					ast = list[lastIndex]
 					continue
@@ -50,12 +57,22 @@ func EvalAst(ast model.MalForm, env *model.MalEnv) model.MalForm {
 					return c.AsMalForm()
 
 				case model.SpecialFormIf:
-					cond := EvalAst(list[1], env).ValBool()
+					// TODO check error field before moving on
+					val := EvalAst(list[1], env)
+					if val.Err != nil {
+						return val
+					}
+					cond := val.ValBool()
 					if cond {
+						if len(list) < 3 { // Return error if expr for true path is not provided.
+							return model.MalForm{
+								Err: model.MalErr("No expression provided for true path"),
+							}
+						}
 						ast = list[2]
 						continue
 					}
-					if len(list) != 4 { // Return nil if expr for false path is not provided.
+					if len(list) < 4 { // Return nil if expr for false path is not provided.
 						return model.MalForm{
 							Type: model.MalTypeNil,
 						}
@@ -69,7 +86,10 @@ func EvalAst(ast model.MalForm, env *model.MalEnv) model.MalForm {
 					for i := 0; i < len(bindingList); i += 2 {
 						key := bindingList[i].ValString()
 						if i+1 >= len(bindingList) {
-							panic("Unexpected symbol " + key + " - no value specified")
+							return model.MalForm{
+								Err: model.MalErr("Unexpected symbol " + key + " - no value specified"),
+							}
+
 						}
 						initMap[key] = bindingList[i+1]
 					}
@@ -78,13 +98,20 @@ func EvalAst(ast model.MalForm, env *model.MalEnv) model.MalForm {
 					continue
 
 				default:
-					panic("Unimplemented special form " + sym)
+					return model.MalForm{
+						Err: model.MalErr("Unimplemented special form " + sym),
+					}
 				}
 			}
 
 			newList := []model.MalForm{}
 			for _, member := range list {
-				newList = append(newList, EvalAst(member, env))
+				// TODO check error field before moving on
+				val := EvalAst(member, env)
+				if val.Err != nil {
+					return val
+				}
+				newList = append(newList, val)
 			}
 
 			{
@@ -102,12 +129,20 @@ func EvalAst(ast model.MalForm, env *model.MalEnv) model.MalForm {
 					binds := mc.Params.ValList()
 					exprs := list[1:]
 					if len(binds) != len(exprs) {
-						panic(fmt.Sprintf("Expected %d params in expression for closure", len(binds)))
+						errMsg := fmt.Sprintf("Expected %d params in expression for closure, got %d", len(binds), len(exprs))
+						return model.MalForm{
+							Err: model.MalErr(errMsg),
+						}
+
 					}
 					initMap := map[string]model.MalForm{}
 					for i := range binds {
 						key := binds[i].ValString()
+						// TODO check error field before moving on
 						val := EvalAst(exprs[i], mc.Env)
+						if val.Err != nil {
+							return val
+						}
 						initMap[key] = val
 					}
 
@@ -116,14 +151,16 @@ func EvalAst(ast model.MalForm, env *model.MalEnv) model.MalForm {
 					continue
 
 				case model.MalTypeSymbol:
-					panic("Unexpected symbol " + lead.ValString())
+					return model.MalForm{
+						Err: model.MalErr("Unexpected symbol " + lead.ValString()),
+					}
 				}
 
 				// Default case for now: return list as is.
 				// Perhaps its more proper to print a err msg.
 				return model.MalForm{
-					model.MalTypeList,
-					list,
+					Type:  model.MalTypeList,
+					Value: list,
 				}
 			}
 		}

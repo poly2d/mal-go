@@ -10,16 +10,22 @@ func list(args []model.MalForm) model.MalForm {
 }
 
 func listQ(args []model.MalForm) model.MalForm {
-	argLenCheck(args, 1)
+	if err := argLenCheck(args, 1); err != nil {
+		return errForm(err)
+	}
 	return boolForm(args[0].Type == model.MalTypeList)
 }
 
 func emptyQ(args []model.MalForm) model.MalForm {
-	argCheck(args, model.MalTypeList)
+	if err := argCheck(args, model.MalTypeList); err != nil {
+		return errForm(err)
+	}
 	return boolForm(len(args[0].ValList()) == 0)
 }
 
 func count(args []model.MalForm) model.MalForm {
-	argCheck(args, model.MalTypeList)
+	if err := argCheck(args, model.MalTypeList); err != nil {
+		return errForm(err)
+	}
 	return numForm(len(args[0].ValList()))
 }

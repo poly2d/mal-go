@@ -25,6 +25,5 @@ cd $GOPATH/src/github.com/poly2d/malgo && go run mal.go
 - Print: `prn`
 
 ### Todos
-- Handle panics
 - Continue guide (steps 5+ and deferrables)
 - Possibly refer to test cases from original mal

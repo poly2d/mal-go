@@ -1,5 +1,3 @@
-build:
-	go build -v .
 run:
 	go run mal.go
 dep:
@@ -9,5 +7,3 @@ fmt:
 test:
 	go test ./read
 	go test ./eval
-clean:
-	rm malgo

@@ -30,6 +30,14 @@ func readAtom(r reader) model.MalForm {
 		}
 	}
 
+	// Treat as a string if strings are detected
+	if token[0] == '"' {
+		return model.MalForm{
+			Type:  model.MalTypeString,
+			Value: token,
+		}
+	}
+
 	return model.MalForm{
 		Type:  model.MalTypeSymbol,
 		Value: token,

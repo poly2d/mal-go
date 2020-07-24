@@ -22,7 +22,7 @@ func (mf MalForm) Sprint() string {
 		sb.WriteString("#<function>")
 	case MalTypeBool:
 		sb.WriteString(strconv.FormatBool(mf.ValBool()))
-	case MalTypeSymbol:
+	case MalTypeSymbol, MalTypeString:
 		sb.WriteString(mf.ValString())
 	case MalTypeNumber:
 		sb.WriteString(strconv.Itoa(mf.ValInt()))

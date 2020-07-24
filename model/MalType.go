@@ -7,6 +7,7 @@ const (
 	MalTypeNil
 	MalTypeBool
 	MalTypeSymbol
+	MalTypeString
 	MalTypeNumber
 	MalTypeList
 	MalTypeClosure
